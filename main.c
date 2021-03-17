@@ -48,7 +48,9 @@ int main(){
   affichage();
   char symbole_joueur;
   char couleur_tour;
-  scanf("%d",)
+  scanf("%d", symbole_joueur);
+  scanf("%d", couleur_tour)
+  majCoup(couleur_tour, char joueur)
   return 0;
 }
 
