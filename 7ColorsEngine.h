@@ -1,6 +1,11 @@
-// #ifndef 7COLORSENGINE_H
-// #define 7COLORSENGINE_H
+#ifndef COLORSENGINE_H
+#define COLORSENGINE_H
+#define taillem 15
+#define nb_coul 7
 
-// void initialisation(char joueur1, char joueur2);
+extern char couleur[nb_coul];
+extern char monde[taillem][taillem];
 
-// #endif
+void initialisation(char joueur1, char joueur2);
+
+#endif
