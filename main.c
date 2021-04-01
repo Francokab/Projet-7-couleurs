@@ -70,18 +70,31 @@ int main(){
   affichage(); // on affiche le monde 
   char couleur_tour;
   int tour = 1;
+	int compa;
   while (tour<tour_max){ // première condition (temporelle) : on se fixe un nombre de tour limité
+		compa = 0;
     printf("tour %d \n",tour);
     if((tour % 2) == 1){ // si le tour est impair, le joueur 1 joue
-      printf("joueur 1 %c, indiquer la couleur que vous voulez récupérer\n",joueur1);
-      scanf(" %c", &couleur_tour);
+			while (!compa){ // on vérfie que la couleur soit bien une des couleurs du plateau
+      	printf("joueur 1 %c, indiquer la couleur que vous voulez récupérer\n",joueur1);
+      	scanf(" %c", &couleur_tour);
+				for (int i = 0; i < nb_coul; i++){ // on compare pour toute la liste de couleur
+					 compa += (1 && (couleur_tour == couleur[i]));
+				}
+			}
       majCoup(couleur_tour, joueur1);
       affichage();
       tour++;
     }
     else{ // si le tour est pair, le joueur 2 joue
       printf("joueur 2 %c, indiquer la couleur que vous voulez récupérer\n",joueur2);
-      scanf(" %c", &couleur_tour);
+			while (!compa){ // on vérfie que la couleur soit bien une des couleurs du plateau
+				printf("joueur 2 %c, indiquer la couleur que vous voulez récupérer\n",joueur2);
+      	scanf(" %c", &couleur_tour);
+				for (int i = 0; i < nb_coul; i++){ // on compare pour toute la liste de couleur
+					 compa += (1 && (couleur_tour == couleur[i]));
+				}
+			}
       majCoup(couleur_tour, joueur2);
       affichage();
       tour++;
