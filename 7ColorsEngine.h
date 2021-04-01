@@ -3,9 +3,18 @@
 #define taillem 15
 #define nb_coul 7
 
+typedef struct joueur{
+  char Symbole;
+  int nbCase;
+  float pourcentage;
+}joueur;
+
 extern char couleur[nb_coul];
 extern char monde[taillem][taillem];
 
-void initialisation(char joueur1, char joueur2);
+joueur* createJoueur();
+void initialisation(joueur joueur1, joueur joueur2);
+void affichage(joueur* joueur1,joueur* joueur2);
+void majCoup(char couleur,joueur joueur1);
 
 #endif
