@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "7ColorsEngine.h"
+#include "Color.h"
 
 char couleur[nb_coul] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
 char monde[taillem][taillem];
 
-joueur* createJoueur() {
+joueur* createJoueur(int numero) {
   joueur* j = malloc(sizeof(joueur));
   char symbole;
-  printf("Créer votre personnage : rentrer un caractère\n");
+  printf("Joueur %d, créer votre personnage : rentrer un caractère\n",numero);
   scanf(" %c", &symbole);
   j->Symbole = symbole;
   j->nbCase = 0;
@@ -38,7 +39,7 @@ void affichage(joueur *joueur1, joueur *joueur2) {
   joueur2->pourcentage = 0;
   for (int i = 0; i < taillem; i++) { //
     for (int j = 0; j < taillem; j++) {
-      printf("%c", monde[i][j]); // on affiche la couleur
+      colorize(monde[i][j]); // on affiche la couleur
       if (monde[i][j] == joueur1->Symbole) {
         joueur1->nbCase += 1; // on récupère l'occupation du joueur 1 sur le plateau
       }

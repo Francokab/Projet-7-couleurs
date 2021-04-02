@@ -1,6 +1,6 @@
 #ifndef COLORSENGINE_H
 #define COLORSENGINE_H
-#define taillem 8
+#define taillem 20
 #define nb_coul 7
 
 typedef struct joueur {
@@ -12,7 +12,7 @@ typedef struct joueur {
 extern char couleur[nb_coul];
 extern char monde[taillem][taillem];
 
-joueur* createJoueur();
+joueur* createJoueur(int numero);
 void initialisation(joueur joueur1, joueur joueur2);
 void affichage(joueur* joueur1, joueur* joueur2);
 void majCoup(char couleur, joueur joueur1);

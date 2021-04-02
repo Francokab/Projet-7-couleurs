@@ -3,8 +3,8 @@
 #define tour_max 100
 
 int main() {
-  joueur joueur1 = *createJoueur();
-  joueur joueur2 = *createJoueur();
+  joueur joueur1 = *createJoueur(1);
+  joueur joueur2 = *createJoueur(2);
   initialisation(joueur1, joueur2);
   printf("Jeu par Infogrames Entertainment ©\n");
   affichage(&joueur1, &joueur2); // on affiche le monde
