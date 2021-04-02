@@ -13,7 +13,7 @@ int main() {
   int compa;
   int couleur_j1 = 0;
   int couleur_j2 = 0;
-  while (joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) { // première condition (temporelle) : on se fixe un nombre de tour limité
+  while (joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
     compa = 0;
     printf("tour %d \n", tour);
     if ((tour % 2) == 1) { // si le tour est impair, le joueur 1 joue
