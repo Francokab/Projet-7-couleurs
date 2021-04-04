@@ -1,6 +1,7 @@
 #include "Color.h"
 #include <stdio.h>
 
+// Fonctions pour imprimer un character avec un fond d'une certaine couleur
 void black(char c){
   printf(BLKHB);
   printf("%c",c);
@@ -49,6 +50,7 @@ void white(char c){
   printf(reset);
 }
 
+// Fonction qui print un character d'une certaine couleur en fonction de quelle lettre c'est
 void colorize(char c){
   switch (c){
     case 'A':
