@@ -4,17 +4,18 @@
 
 
 int main() {
+  monde monde1 = *createMonde(40);
   joueur joueur1 = *createJoueur(1,0);
-  joueur joueur2 = *createJoueur(2,0);
-  initialisation(joueur1, joueur2);
-  affichage(&joueur1, &joueur2); // on affiche le monde
+  joueur joueur2 = *createJoueur(2,2);
+  initialisation(&monde1, &joueur1, &joueur2);
+  affichage(&monde1); // on affiche le monde
   int tour = 1;
   while (joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
     printf("Tour %d :\n", tour);
     // si le tour est pair, le joueur 2 joue
     // si le tour est impair, le joueur 1 joue
-    (tour % 2) ? doRound(&joueur1) : doRound(&joueur2);
-    affichage(&joueur1, &joueur2);
+    (tour % 2) ? doRound(&monde1, &joueur1) : doRound(&monde1, &joueur2);
+    affichage(&monde1);
     tour++;
   }
   if (joueur1.pourcentage>50){

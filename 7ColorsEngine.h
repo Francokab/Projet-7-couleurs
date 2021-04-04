@@ -1,6 +1,5 @@
 #ifndef COLORSENGINE_H
 #define COLORSENGINE_H
-#define taillem 40
 #define nb_coul 7
 
 typedef struct joueur {
@@ -11,15 +10,30 @@ typedef struct joueur {
   int IA;
 } joueur;
 
+typedef struct monde{
+  int taille_monde;
+  char *plateau;
+  char *plateauSimulé;
+  joueur* joueur1;
+  joueur* joueur2;
+}monde;
+
 
 extern char couleur[nb_coul];
-extern char monde[taillem][taillem];
 
 joueur* createJoueur(int numero, int IA);
-void initialisation(joueur joueur1, joueur joueur2);
-void affichage(joueur* joueur1, joueur* joueur2);
-void majCoup(char couleur, joueur joueur1);
-char getColor(joueur* joueur1);
-void doRound(joueur* joueur1);
+monde* createMonde(int taille_monde);
+char getCell(monde* m, int i, int j);
+void setCell(monde* m, int i, int j, char c);
+void resetPlateauSimulé(monde* m);
+char getCellSimulé(monde* m, int i, int j);
+void setCellSimulé(monde* m, int i, int j, char c);
+void initialisation(monde* m, joueur* joueur1, joueur* joueur2);
+void affichage(monde* m);
+void majCoup(monde* m, char couleur, joueur joueur1);
+int prediction(monde* m, char couleur, joueur joueur1);
+char predictionMax(monde* m, joueur joueur1);
+char getColor(monde* m, joueur* joueur1);
+void doRound(monde* m, joueur* joueur1);
 
 #endif
