@@ -67,7 +67,7 @@ void initialisation(monde* m, joueur* joueur1, joueur* joueur2) {
 
 void affichage(monde* m) {
   printf("\033[H\033[2J"); // on clear le screen
-  printf(" Jeu par Infogrames Entertainment ©\n");
+  printf(" Jeu par Infogrames Entertainment ©\a\n");
   m->joueur1->nbCase = 0;
   m->joueur2->nbCase = 0;
   m->joueur1->pourcentage = 0;
