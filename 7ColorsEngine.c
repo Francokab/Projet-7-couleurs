@@ -3,54 +3,9 @@
 #include <stdio.h>
 #include "7ColorsEngine.h"
 #include "Color.h"
-
-char couleur[nb_coul] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-
-joueur* createJoueur(int numero, int IA) {
-  joueur* j = malloc(sizeof(joueur));
-  char symbole;
-  printf("Joueur %d, créer votre personnage : rentrer un caractère\n",numero);
-  scanf(" %c", &symbole);
-  j->Symbole = symbole;
-  j->numero = numero;
-  j->nbCase = 0;
-  j->pourcentage = 0.;
-  j->IA = IA;
-  return j;
-}
-
-monde* createMonde(int taille_monde){
-  monde* m = malloc(sizeof(monde));
-  m->taille_monde = taille_monde;
-  m->plateau = malloc(taille_monde*taille_monde*sizeof(char));
-  m->plateauSimulé = malloc(taille_monde*taille_monde*sizeof(char));
-  return m;
-}
-
-char getCell(monde* m, int i, int j){
-  return m->plateau[i + j * m->taille_monde];
-}
-
-void setCell(monde* m, int i, int j, char c){
-  m->plateau[i + j * m->taille_monde] = c;
-}
-
-void resetPlateauSimulé(monde* m){
-  for (int i = 0; i< m->taille_monde * m->taille_monde; i++){
-    m->plateauSimulé[i] = m->plateau[i];
-  }
-}
-
-char getCellSimulé(monde* m, int i, int j){
-  return m->plateauSimulé[i + j * m->taille_monde];
-}
-
-void setCellSimulé(monde* m, int i, int j, char c){
-  m->plateauSimulé[i + j * m->taille_monde] = c;
-}
+#include "CreationMonde.h"
 
 void initialisation(monde* m, joueur* joueur1, joueur* joueur2) {
-  srand(time(NULL)); // initialiser la fonction random
   m->joueur1 = joueur1;
   m->joueur2 = joueur2;
   setCell(m, m->taille_monde-1, 0, m->joueur1->Symbole); // placement du premier joueur
@@ -65,16 +20,20 @@ void initialisation(monde* m, joueur* joueur1, joueur* joueur2) {
   resetPlateauSimulé(m);
 }
 
-void affichage(monde* m) {
-  printf("\033[H\033[2J"); // on clear le screen
-  printf(" Jeu par Infogrames Entertainment ©\a\n");
+void affichage(monde* m, int Affichage_type) {
+  if (Affichage_type){
+    printf("\033[H\033[2J"); // on clear le screen
+    printf(" Jeu par Infogrames Entertainment ©\a\n");
+  }
   m->joueur1->nbCase = 0;
   m->joueur2->nbCase = 0;
   m->joueur1->pourcentage = 0;
   m->joueur2->pourcentage = 0;
   for (int i = 0; i < m->taille_monde; i++) { //
     for (int j = 0; j < m->taille_monde; j++) {
-      colorize(getCell(m, i, j)); // on affiche la couleur
+      if (Affichage_type) {
+        colorize(getCell(m, i, j)); // on affiche la couleur
+      }
       if (getCell(m, i, j) == m->joueur1->Symbole) {
         m->joueur1->nbCase += 1; // on récupère l'occupation du joueur 1 sur le plateau
       }
@@ -82,12 +41,18 @@ void affichage(monde* m) {
         m->joueur2->nbCase += 1; // on récupère l'occupation du joueur 2 sur le plateau
       }
     }
-    printf("\n");// on saute une ligne
+    if (Affichage_type){
+      printf("\n");// on saute une ligne
+    }
   }
-  printf("\n");
+  if (Affichage_type){
+    printf("\n");
+  }
   m->joueur1->pourcentage = (float)m->joueur1->nbCase * 100 / (m->taille_monde * m->taille_monde);
   m->joueur2->pourcentage = (float)m->joueur2->nbCase * 100 / (m->taille_monde * m->taille_monde);
-  printf("le joueur 1 occupe %f pourcents et le joueur 2 occupe %f pourcents\n", m->joueur1->pourcentage, m->joueur2->pourcentage);
+  if (Affichage_type){
+    printf("le joueur 1 occupe %f pourcents et le joueur 2 occupe %f pourcents\n", m->joueur1->pourcentage, m->joueur2->pourcentage);
+  }
 }
 
 void majCoup(monde* m, char couleur, joueur joueur1) { // si la couleur selectionné par le joueur est adjacente à une case joueur, on la change en case joueur
@@ -201,4 +166,37 @@ void doRound(monde* m, joueur* joueur1){
   }
   majCoup(m, couleur_tour, *joueur1);
 
+}
+
+int playGame(int taille_monde, int IA1, int IA2, int Affichage_type){
+  monde monde1 = *createMonde(taille_monde);
+  joueur joueur1 = *createJoueur(1,IA1);
+  joueur joueur2 = *createJoueur(2,IA2);
+  initialisation(&monde1, &joueur1, &joueur2);
+  affichage(&monde1, Affichage_type); // on affiche le monde
+  printf("t");
+  int tour = 1;
+  while (joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
+    if (Affichage_type) {
+      printf("Tour %d :\n", tour); // on affiche le monde
+    }
+    // si le tour est pair, le joueur 2 joue
+    // si le tour est impair, le joueur 1 joue
+    (tour % 2) ? doRound(&monde1, &joueur1) : doRound(&monde1, &joueur2);
+    affichage(&monde1, Affichage_type); // on affiche le monde
+    tour++;
+  }
+  if (joueur1.pourcentage>50){
+    if (Affichage_type){
+      printf("le joueur 1 a gagné\n");
+    }
+    return 1;
+  }
+  else if (joueur2.pourcentage>50){
+    if (Affichage_type){
+      printf("le joueur 2 a gagné\n");
+    }
+    return 2;
+  }
+  return 0;
 }
