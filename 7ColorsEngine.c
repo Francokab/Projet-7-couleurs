@@ -84,7 +84,7 @@ void majCoup(monde* m, char couleur, joueur joueur1) { // si la couleur selectio
   }
 }
 
-int prediction(monde* m, char couleur, joueur joueur1) { // si la couleur selectionné par le joueur est adjacente à une case joueur, on la change en case joueur
+int prediction(monde* m, char couleur, joueur joueur1) { // marche comme majCoup mais sur un tableau parrallèle qui peut être reset et revoit
   int nbCase = 0;
   int test = 1;
   while (test == 1) {
@@ -137,16 +137,32 @@ char predictionMax(monde* m, joueur joueur1){
 
 char getColor(monde* m, joueur* joueur1){
   char couleur_tour;
+  int listePrediction[nb_coul];
+  int checkListeVide;
   switch (joueur1->IA){
     case 0:
       printf("Joueur %d %c, indiquer la couleur que vous voulez récupérer\n", joueur1->numero, joueur1->Symbole);
       scanf(" %c", &couleur_tour);
       break;
     case 1:
-      do {
-        couleur_tour = couleur[rand() % nb_coul];
+      checkListeVide = 0;
+      for (int i = 0; i<nb_coul; i++){
         resetPlateauSimulé(m);
-      } while(!prediction(m, couleur_tour, *joueur1));
+        listePrediction[i] = prediction(m, couleur[i], *joueur1);
+        if (listePrediction[i]){
+          checkListeVide++;
+          }
+      }
+      if (!checkListeVide){
+        couleur_tour = couleur[0];
+      }
+      else{
+        int i;
+        do {
+          i = rand() % nb_coul;
+          couleur_tour = couleur[i];
+        } while(!listePrediction[i]);
+      }
       break;
     case 2:
       couleur_tour = predictionMax(m, *joueur1);
@@ -174,9 +190,8 @@ int playGame(int taille_monde, int IA1, int IA2, int Affichage_type){
   joueur joueur2 = *createJoueur(2,IA2);
   initialisation(&monde1, &joueur1, &joueur2);
   affichage(&monde1, Affichage_type); // on affiche le monde
-  printf("t");
   int tour = 1;
-  while (joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
+  while ((joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) && !(joueur1.pourcentage == 50 && joueur2.pourcentage == 50)) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
     if (Affichage_type) {
       printf("Tour %d :\n", tour); // on affiche le monde
     }
