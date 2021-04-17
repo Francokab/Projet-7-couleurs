@@ -32,7 +32,7 @@ monde* createMonde(int taille_monde){
   monde* m = malloc(sizeof(monde));
   m->taille_monde = taille_monde;
   m->plateau = malloc(taille_monde*taille_monde*sizeof(char));
-  m->plateauSimulé = malloc(taille_monde*taille_monde*sizeof(char));
+  m->plateauSimule = malloc(taille_monde*taille_monde*sizeof(char));
   return m;
 }
 
@@ -44,16 +44,16 @@ void setCell(monde* m, int i, int j, char c){
   m->plateau[i + j * m->taille_monde] = c;
 }
 
-void resetPlateauSimulé(monde* m){
+void resetPlateauSimule(monde* m){
   for (int i = 0; i< m->taille_monde * m->taille_monde; i++){
-    m->plateauSimulé[i] = m->plateau[i];
+    m->plateauSimule[i] = m->plateau[i];
   }
 }
 
-char getCellSimulé(monde* m, int i, int j){
-  return m->plateauSimulé[i + j * m->taille_monde];
+char getCellSimule(monde* m, int i, int j){
+  return m->plateauSimule[i + j * m->taille_monde];
 }
 
-void setCellSimulé(monde* m, int i, int j, char c){
-  m->plateauSimulé[i + j * m->taille_monde] = c;
+void setCellSimule(monde* m, int i, int j, char c){
+  m->plateauSimule[i + j * m->taille_monde] = c;
 }

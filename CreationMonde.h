@@ -13,7 +13,7 @@ typedef struct joueur {
 typedef struct monde{
   int taille_monde;
   char *plateau;
-  char *plateauSimulé;
+  char *plateauSimule;
   joueur* joueur1;
   joueur* joueur2;
 }monde;
@@ -25,8 +25,8 @@ joueur* createJoueur(int numero, int IA);
 monde* createMonde(int taille_monde);
 char getCell(monde* m, int i, int j);
 void setCell(monde* m, int i, int j, char c);
-void resetPlateauSimulé(monde* m);
-char getCellSimulé(monde* m, int i, int j);
-void setCellSimulé(monde* m, int i, int j, char c);
+void resetPlateauSimule(monde* m);
+char getCellSimule(monde* m, int i, int j);
+void setCellSimule(monde* m, int i, int j, char c);
 
 #endif

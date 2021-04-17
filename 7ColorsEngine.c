@@ -17,7 +17,7 @@ void initialisation(monde* m, joueur* joueur1, joueur* joueur2) {
       }
     }
   }
-  resetPlateauSimulé(m);
+  resetPlateauSimule(m);
 }
 
 void affichage(monde* m, int Affichage_type) {
@@ -91,24 +91,24 @@ int prediction(monde* m, char couleur, joueur joueur1) { // marche comme majCoup
     test = 0;
     for (int i = 0; i < m->taille_monde; i++) { // on parcourt le monde
       for (int j = 0; j < m->taille_monde; j++) {
-        if (getCellSimulé(m, i, j) == couleur) { // si la case est de la couleur sélectionné
-          if (getCellSimulé(m, i - 1, j) == joueur1.Symbole && i != 0) { // si la case à gauche est de la même couleur
-            setCellSimulé(m, i, j, joueur1.Symbole);
+        if (getCellSimule(m, i, j) == couleur) { // si la case est de la couleur sélectionné
+          if (getCellSimule(m, i - 1, j) == joueur1.Symbole && i != 0) { // si la case à gauche est de la même couleur
+            setCellSimule(m, i, j, joueur1.Symbole);
             test = 1;//on reparcourt le monde
             nbCase++;
           }
-          else if (getCellSimulé(m, i + 1, j) == joueur1.Symbole && i != m->taille_monde - 1) { // si la case à droite est de la même couleur
-            setCellSimulé(m, i, j, joueur1.Symbole);
+          else if (getCellSimule(m, i + 1, j) == joueur1.Symbole && i != m->taille_monde - 1) { // si la case à droite est de la même couleur
+            setCellSimule(m, i, j, joueur1.Symbole);
             test = 1;//on reparcourt le monde
             nbCase++;
           }
-          else if (getCellSimulé(m, i, j - 1) == joueur1.Symbole && j != 0) { // si la case au dessus est de la même couleur
-            setCellSimulé(m, i, j, joueur1.Symbole);
+          else if (getCellSimule(m, i, j - 1) == joueur1.Symbole && j != 0) { // si la case au dessus est de la même couleur
+            setCellSimule(m, i, j, joueur1.Symbole);
             test = 1;//on reparcourt le monde
             nbCase++;
           }
-          else if (getCellSimulé(m, i, j + 1) == joueur1.Symbole && j != m->taille_monde - 1) { // si la case en dessous est de la même couleur
-            setCellSimulé(m, i, j, joueur1.Symbole);
+          else if (getCellSimule(m, i, j + 1) == joueur1.Symbole && j != m->taille_monde - 1) { // si la case en dessous est de la même couleur
+            setCellSimule(m, i, j, joueur1.Symbole);
             test = 1;//on reparcourt le monde
             nbCase++;
           }
@@ -120,13 +120,13 @@ int prediction(monde* m, char couleur, joueur joueur1) { // marche comme majCoup
 }
 
 char predictionMax(monde* m, joueur joueur1){
-  char couleurMax;
+  char couleurMax = couleur[0];
   int max = 0;
   int pre;
   for (int i = 0; i<nb_coul; i++){
-    resetPlateauSimulé(m);
+    resetPlateauSimule(m);
     pre = prediction(m, couleur[i], joueur1);
-    resetPlateauSimulé(m);
+    resetPlateauSimule(m);
     if (pre > max){
       max = pre;
       couleurMax = couleur[i];
@@ -147,7 +147,7 @@ char getColor(monde* m, joueur* joueur1){
     case 1:
       checkListeVide = 0;
       for (int i = 0; i<nb_coul; i++){
-        resetPlateauSimulé(m);
+        resetPlateauSimule(m);
         listePrediction[i] = prediction(m, couleur[i], *joueur1);
         if (listePrediction[i]){
           checkListeVide++;

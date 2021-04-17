@@ -15,8 +15,8 @@ int main() {
   int WinJ1 = 0;
   int WinJ2 = 0;
   for (int i = 0; i<100; i = i+1){
-    int a = playGame(6,1,1,0);
-    printf("Partie %d : Victoire %d\n ", i, a);
+    int a = playGame(30,2,2,0);
+    printf("Partie %d : Victoire %d\n", i, a);
     switch (a){
       case 1:
         WinJ1++;
