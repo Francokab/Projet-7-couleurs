@@ -14,7 +14,7 @@
 // IA = 1 : aléatoire
 // IA = 2 : glouton
 // IA = 3 : gloutonPrevoyant
-// IA = 4 : hégémonique
+// IA = 4 : hégémonique (marche mal et peut se bloquer)
 // Affichage = 1 : affiche la Partie
 // Si vous avait un joueur humain il est conseiller de jouer avec afficahge
 
