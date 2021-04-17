@@ -6,10 +6,9 @@
 char couleur[nb_coul] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
 
 joueur* createJoueur(int numero, int IA) {
-  joueur* j = malloc(sizeof(joueur));
+  joueur* j = malloc(sizeof(joueur));  //on assigne l'espace memoire pour le joueur
   char symbole;
-  //printf("Joueur %d, créer votre personnage : rentrer un caractère\n",numero);
-  //scanf(" %c", &symbole);
+  // on determine le symbole utilisé par le joueur
   if (numero == 1){
     symbole = 'V';
   }
@@ -34,6 +33,14 @@ monde* createMonde(int taille_monde){
   m->plateau = malloc(taille_monde*taille_monde*sizeof(char));
   m->plateauSimule = malloc(taille_monde*taille_monde*sizeof(char));
   return m;
+}
+
+void freeMonde(monde* m, joueur* joueur1, joueur* joueur2){
+  free(joueur1);
+  free(joueur2);
+  free(m->plateau);
+  free(m->plateauSimule);
+  free(m);
 }
 
 char getCell(monde* m, int i, int j){

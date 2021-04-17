@@ -1,6 +1,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "7ColorsEngine.h"
 #include "Color.h"
 #include "CreationMonde.h"
@@ -52,6 +53,7 @@ void affichage(monde* m, int Affichage_type) {
   m->joueur2->pourcentage = (float)m->joueur2->nbCase * 100 / (m->taille_monde * m->taille_monde);
   if (Affichage_type){
     printf("le joueur 1 occupe %f pourcents et le joueur 2 occupe %f pourcents\n", m->joueur1->pourcentage, m->joueur2->pourcentage);
+    usleep(400000);
   }
 }
 
@@ -123,7 +125,7 @@ char predictionMax(monde* m, joueur joueur1){
   char couleurMax = couleur[0];
   int max = 0;
   int pre;
-  for (int i = 0; i<nb_coul; i++){
+  for (int i = 0; i<nb_coul; i++){ // on fait une prediction pour chaque couleur et on prend le max
     resetPlateauSimule(m);
     pre = prediction(m, couleur[i], joueur1);
     resetPlateauSimule(m);
@@ -135,38 +137,127 @@ char predictionMax(monde* m, joueur joueur1){
   return couleurMax;
 }
 
+int perimetre(monde* m, joueur joueur1) { 
+  int peri = 0;
+    for (int i = 0; i < m->taille_monde; i++) { // on parcourt le monde
+      for (int j = 0; j < m->taille_monde; j++) {
+       if (getCell(m, i, j) != joueur1.Symbole) { // si la case est un joueur sélectionné
+          if (getCell(m, i - 1, j) == joueur1.Symbole && i != 0) { // si la case à gauche est de la même couleur
+            peri++;}
+          if (getCell(m, i + 1, j) == joueur1.Symbole && i != m->taille_monde - 1) { // si la case à droite est de la même couleur
+            peri++;}
+          if (getCell(m, i, j - 1) == joueur1.Symbole && j != 0) { // si la case au dessus est de la même couleur
+          peri++;}
+          if (getCell(m, i, j + 1) == joueur1.Symbole && j != m->taille_monde - 1) { // si la case en dessous est de la même couleur
+          peri++;}
+       }
+      }
+    }
+  return peri;
+}
+
+int perimetreSimule(monde* m, joueur joueur1) { 
+  int peri = 0;
+    for (int i = 0; i < m->taille_monde; i++) { // on parcourt le monde
+      for (int j = 0; j < m->taille_monde; j++) {
+       if (getCellSimule(m, i, j) != joueur1.Symbole) { // si la case est un joueur sélectionné
+          if (getCellSimule(m, i - 1, j) == joueur1.Symbole && i != 0) { // si la case à gauche est de la même couleur
+            peri++;}
+          if (getCellSimule(m, i + 1, j) == joueur1.Symbole && i != m->taille_monde - 1) { // si la case à droite est de la même couleur
+            peri++;}
+          if (getCellSimule(m, i, j - 1) == joueur1.Symbole && j != 0) { // si la case au dessus est de la même couleur
+          peri++;}
+          if (getCellSimule(m, i, j + 1) == joueur1.Symbole && j != m->taille_monde - 1) { // si la case en dessous est de la même couleur
+          peri++;}
+       }
+      }
+    }
+  return peri;
+}
+
+char predictionPeri(monde* m, joueur joueur1){
+  char couleurMax = couleur[0];
+  int max = -10000000; // on definie le max a une valeur impossiblement basse
+  int pre;
+  int peri;
+  for (int i = 0; i<nb_coul; i++){ // on fait une prediction pour chaque couleur et on prend le max
+    resetPlateauSimule(m);
+    pre = prediction(m, couleur[i], joueur1);
+    peri = perimetreSimule(m, joueur1); 
+    resetPlateauSimule(m);
+    if ((peri > max) && (pre != 0)){
+      max = peri;
+      couleurMax = couleur[i];
+    }
+  }
+  return couleurMax;
+}
+
+char predictionMax2(monde* m, joueur joueur1){
+  char couleurMax = couleur[0];
+  int max = 0;
+  int max1 = 0;
+  int pre1;
+  int pre2;
+  for (int i = 0; i<nb_coul; i++){
+    for (int j = 0; j<nb_coul; j++){ // on teste chaque couple de coup possible
+      resetPlateauSimule(m);
+      pre1 = prediction(m, couleur[i], joueur1);
+      pre2 = prediction(m, couleur[j], joueur1);
+      resetPlateauSimule(m);
+      if (pre1 + pre2 > max){
+        max = pre1 + pre2;
+        max1 = pre1;
+        couleurMax = couleur[i];
+      }
+      else if((pre1 + pre2 == max) && (pre1 > max1)){ // si le resultat de deux couple de coup est identique on prend celui avec le meilleur premier coup 
+        max = pre1 + pre2;
+        max1 = pre1;
+        couleurMax = couleur[i];
+      }
+    }
+  }
+  return couleurMax;
+}
+
 char getColor(monde* m, joueur* joueur1){
   char couleur_tour;
   int listePrediction[nb_coul];
   int checkListeVide;
   switch (joueur1->IA){
-    case 0:
+    case 0: //joueur humain : on demande la couleur à jouer
       printf("Joueur %d %c, indiquer la couleur que vous voulez récupérer\n", joueur1->numero, joueur1->Symbole);
       scanf(" %c", &couleur_tour);
       break;
-    case 1:
+    case 1: // jouer aléatoirz
       checkListeVide = 0;
       for (int i = 0; i<nb_coul; i++){
         resetPlateauSimule(m);
-        listePrediction[i] = prediction(m, couleur[i], *joueur1);
-        if (listePrediction[i]){
+        listePrediction[i] = prediction(m, couleur[i], *joueur1); // on fait une prediction pour chaque joueur
+        if (listePrediction[i]){ //si la prediction est non nulle on le note
           checkListeVide++;
           }
       }
-      if (!checkListeVide){
+      if (!checkListeVide){ // si toute les prediction ont été nulle on prend un couleur arbitraire
         couleur_tour = couleur[0];
       }
       else{
         int i;
-        do {
+        do { // une prend une couleur aléatoire jusqu'à que ça prediction soit non nulle
           i = rand() % nb_coul;
           couleur_tour = couleur[i];
         } while(!listePrediction[i]);
       }
       break;
-    case 2:
+    case 2: // joueur glouton : on prend la prediction max
       couleur_tour = predictionMax(m, *joueur1);
     break;
+    case 3:
+      couleur_tour = predictionMax2(m, *joueur1);
+      break;
+    case 4:
+      couleur_tour = predictionPeri(m, *joueur1);
+      break;
   }
   return couleur_tour; 
 }
@@ -185,33 +276,37 @@ void doRound(monde* m, joueur* joueur1){
 }
 
 int playGame(int taille_monde, int IA1, int IA2, int Affichage_type){
-  monde monde1 = *createMonde(taille_monde);
-  joueur joueur1 = *createJoueur(1,IA1);
-  joueur joueur2 = *createJoueur(2,IA2);
-  initialisation(&monde1, &joueur1, &joueur2);
-  affichage(&monde1, Affichage_type); // on affiche le monde
+  // on initialise le monde
+  monde* monde1 = createMonde(taille_monde);
+  joueur* joueur1 = createJoueur(1,IA1);
+  joueur* joueur2 = createJoueur(2,IA2);
+  initialisation(monde1, joueur1, joueur2);
+  affichage(monde1, Affichage_type); // on affiche le monde
   int tour = 1;
-  while ((joueur1.pourcentage <= 50 && joueur2.pourcentage<=50) && !(joueur1.pourcentage == 50 && joueur2.pourcentage == 50)) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
+  while ((joueur1->pourcentage <= 50 && joueur2->pourcentage<=50) && !(joueur1->pourcentage == 50 && joueur2->pourcentage == 50)) { // condtions de victoire : avoir plus de 50% du territoire pour gagner
     if (Affichage_type) {
       printf("Tour %d :\n", tour); // on affiche le monde
     }
     // si le tour est pair, le joueur 2 joue
     // si le tour est impair, le joueur 1 joue
-    (tour % 2) ? doRound(&monde1, &joueur1) : doRound(&monde1, &joueur2);
-    affichage(&monde1, Affichage_type); // on affiche le monde
+    (tour % 2) ? doRound(monde1, joueur1) : doRound(monde1, joueur2);
+    affichage(monde1, Affichage_type); // on affiche le monde
     tour++;
   }
-  if (joueur1.pourcentage>50){
+  if (joueur1->pourcentage>50){
     if (Affichage_type){
       printf("le joueur 1 a gagné\n");
     }
+    freeMonde(monde1, joueur1, joueur2);
     return 1;
   }
-  else if (joueur2.pourcentage>50){
+  else if (joueur2->pourcentage>50){
     if (Affichage_type){
       printf("le joueur 2 a gagné\n");
     }
+    freeMonde(monde1, joueur1, joueur2);
     return 2;
   }
+  freeMonde(monde1, joueur1, joueur2);
   return 0;
 }
